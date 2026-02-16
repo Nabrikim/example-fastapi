@@ -822,5 +822,29 @@ GIT
 ------
 git init
 git add --all
+git commit -m "Initial Commit" # it will first bring an errror for you to provide your user account and password for your github
+git config --global user.email brayosanta@gmail.com
+git config --global user.name Nabrikim
+git commit -m "Initial Commit"
+git branch -M main
+git remote add origin https://github.com/Nabrikim/example-fastapi.git
+git push -u origin main
 
 """
+
+
+""""
+==========
+HEROKU
+========
+heroku --version
+heroku login
+heroku create name
+
+render
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+"""
+    
+
+
