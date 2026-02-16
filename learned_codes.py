@@ -831,6 +831,12 @@ git remote add origin https://github.com/Nabrikim/example-fastapi.git
 git push -u origin main
 git remote
 
+
+# to save changes in git
+ git add learned_codes.py
+  git status
+  git commit -m "updated only the database connection logic"
+
 """
 
 
