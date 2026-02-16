@@ -11,7 +11,7 @@ with engine.connect() as conn:
     conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE;"))
     conn.commit()
 
-models.Base.metadata.create_all(bind=engine)
+#models.Base.metadata.create_all(bind=engine)
 
 
 
