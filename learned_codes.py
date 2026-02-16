@@ -829,6 +829,7 @@ git commit -m "Initial Commit"
 git branch -M main
 git remote add origin https://github.com/Nabrikim/example-fastapi.git
 git push -u origin main
+git remote
 
 """
 
