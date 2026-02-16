@@ -836,6 +836,7 @@ git remote
  git add learned_codes.py
   git status
   git commit -m "updated only the database connection logic"
+  git push
 
 """
 
