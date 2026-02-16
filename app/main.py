@@ -4,6 +4,12 @@ from . import models,schemas
 from .database import engine
 from .routers import posts,user,auth,votes
 from .config import settings
+from sqlalchemy import text
+
+with engine.connect() as conn:
+    conn.execute(text("DROP TABLE IF EXISTS posts CASCADE;"))
+    conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE;"))
+    conn.commit()
 
 models.Base.metadata.create_all(bind=engine)
 
