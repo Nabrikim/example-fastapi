@@ -5,12 +5,20 @@ from .database import engine
 from .routers import posts,user,auth,votes
 from .config import settings
 from sqlalchemy import text
+from sqlalchemy import text
+from .database import engine
 
-with engine.connect() as conn:
-    conn.execute(text("DROP TABLE IF EXISTS posts CASCADE;"))
-    conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE;"))
-    conn.commit()
-
+# --- FINAL RESET BLOCK ---
+try:
+    with engine.connect() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS users CASCADE;"))
+        conn.execute(text("DROP TABLE IF EXISTS posts CASCADE;"))
+        conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE;"))
+        conn.commit()
+        print("RESET SUCCESSFUL: All tables dropped.")
+except Exception as e:
+    print(f"Reset info: {e}")
+# -------------------------
 #models.Base.metadata.create_all(bind=engine)
 
 
