@@ -36,7 +36,11 @@ app.include_router(votes.router)
 def verify_db(db: Session = Depends(get_db)):
     inspector = inspect(engine)
     tables = inspector.get_table_names()
-    return {"existing_tables": tables}
+    return {
+            "connection": "Live",
+            "database_host": str(engine.url).split('@')[-1], # Shows you the server name
+            "existing_tables": tables
+        }
 
 
 
