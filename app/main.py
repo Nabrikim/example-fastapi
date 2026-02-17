@@ -9,7 +9,7 @@ from sqlalchemy import text
 from .database import engine
 
 
-models.Base.metadata.create_all(bind=engine)
+
 
 
 
