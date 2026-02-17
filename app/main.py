@@ -12,7 +12,6 @@ from alembic.config import Config
 from alembic import command
 import os
 
-
 with engine.connect() as conn:
     # This force-deletes the tables so we can start fresh
     conn.execute(text("DROP TABLE IF EXISTS posts, users, votes, alembic_version CASCADE;"))
