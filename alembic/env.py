@@ -19,11 +19,14 @@ if external_url:
     target_url = external_url
 
 else:
-    target_url = f'postgresql://{}'
-
+    target_url = (
+    "postgresql://" + 
+    f"{settings.database_username}:{settings.database_password}@" + 
+    f"{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
+)
 
 config = context.config
-config.set_main_option("sqlalchemy.url",f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}')
+config.set_main_option("sqlalchemy.url",target_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -74,7 +77,8 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    url = f'postgresql+psycopg2://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
+    url = config.get_main_option("sqlalchemy.url")
+    print(f"ALEMBIC DEBUG: Using URL: {url.split('@')[-1]}") # Safely logs the host only
     connectable = engine_from_config(
         
         config.get_section(config.config_ini_section, {}),
