@@ -33,15 +33,22 @@ app.include_router(votes.router)
 
 
 @app.get("/verify-db")
-def verify_db(db: Session = Depends(get_db)):
+def verify_db():
+    from sqlalchemy import inspect
     inspector = inspect(engine)
-    tables = inspector.get_table_names()
+    
+    # Check the default 'public' schema
+    public_tables = inspector.get_table_names(schema="public")
+    
+    # Check if they were created under a different schema name
+    all_schemas = inspector.get_schema_names()
+    
     return {
-            "connection": "Live",
-            "database_host": str(engine.url).split('@')[-1], # Shows you the server name
-            "existing_tables": tables
-        }
-
+        "database_host": str(engine.url).split('@')[-1],
+        "public_schema_tables": public_tables,
+        "available_schemas": all_schemas,
+        "note": "If public_schema_tables is empty, check the other schemas listed."
+    }
 
 
 
