@@ -842,6 +842,62 @@ git remote
   pip install -r requirements.txt && alembic downgrade base
   pip install -r requirements.txt && alembic stamp base
 
+
+  Option 1: The "Clean Rewrite" (Undo the last commit)
+If you just committed locally and want to "delete" that migration file as if it never happened.
+
+Undo the Commit:
+Run this to move your branch back by one step. The --soft flag ensures your code doesn't disappear; it just becomes "un-committed."
+
+Bash
+git reset --soft HEAD~1
+Delete the File:
+Now that the file is no longer part of a commit, you can safely delete it from your folder:
+
+Bash
+rm alembic/versions/007dcafc5d8d_user_phone_number.py
+Commit the "Good" Code:
+If you have other changes you did want to keep, add them and commit again.
+
+Bash
+git add .
+git commit -m "Removing accidental migration and keeping other changes"
+Option 2: The "Safety Reversal" (If already Pushed)
+If the file 007dcafc5d8d is already on GitHub/Render, deleting it with a "Reset" can cause errors for your teammates or your Render build. Instead, you "Revert" it.
+
+Find the commit ID:
+
+Bash
+git log --oneline
+(Look for the ID next to "User-phone-number", e.g., abc1234)
+
+Run the Revert:
+This creates a new commit that does the exact opposite of the one you're reversing (it deletes the file and undoes the code).
+
+Bash
+git revert abc1234
+Push to Render:
+
+Bash
+git push origin main
+Step 3: Crucial Alembic Cleanup (Don't skip this!)
+When you delete or reverse a migration file, the Database might still think that version is the current "Head." You need to sync them up so your next migration doesn't crash.
+
+Check your current versions:
+Look at the files remaining in your alembic/versions/ folder. Find the ID of the file that should be the latest one (the one created just before the phone number one).
+
+Stamp the Database:
+Run this to tell the database: "Ignore that phone number version, we are actually on [Previous_ID] now."
+
+Bash
+alembic stamp [Previous_Version_ID]
+Which one should you use?
+Use Option 1 if you are working alone and haven't pushed to GitHub.
+
+Use Option 2 if Render has already tried to deploy that specific commit.
+
+Would you like me to show you how
+
 """
 
 
