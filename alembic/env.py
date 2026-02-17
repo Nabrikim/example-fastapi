@@ -1,5 +1,6 @@
 from logging.config import fileConfig
 import sys
+import os
 from os import path
 
 from sqlalchemy import engine_from_config
@@ -13,6 +14,14 @@ from app.config import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+external_url = os.getenv("DATABASE_URL_EXTERNAL")
+if external_url:
+    target_url = external_url
+
+else:
+    target_url = f'postgresql://{}'
+
+
 config = context.config
 config.set_main_option("sqlalchemy.url",f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}')
 
