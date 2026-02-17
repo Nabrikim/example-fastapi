@@ -838,6 +838,10 @@ git remote
   git commit -m "updated only the database connection logic"
   git push
 
+
+  pip install -r requirements.txt && alembic downgrade base
+  pip install -r requirements.txt && alembic stamp base
+
 """
 
 

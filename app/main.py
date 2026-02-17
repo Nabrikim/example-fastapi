@@ -4,12 +4,14 @@ from . import models,schemas
 from .database import engine
 from .routers import posts,user,auth,votes
 from .config import settings
-from sqlalchemy import text
-from sqlalchemy import text
 from .database import engine
+from sqlalchemy import text
 
 
-
+with engine.connect() as conn:
+    # This force-deletes the tables so we can start fresh
+    conn.execute(text("DROP TABLE IF EXISTS posts, users, votes, alembic_version CASCADE;"))
+    conn.commit()
 
 
 
