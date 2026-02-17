@@ -7,7 +7,10 @@ from .config import settings
 from .database import engine
 from sqlalchemy.orm import Session
 from sqlalchemy import text,inspect
-
+import sqlalchemy
+from alembic.config import Config
+from alembic import command
+import os
 
 
 with engine.connect() as conn:
@@ -49,6 +52,19 @@ def verify_db():
         "available_schemas": all_schemas,
         "note": "If public_schema_tables is empty, check the other schemas listed."
     }
+
+
+@app.get("/force-migrate")
+def force_migrate():
+    try:
+        # This points to the alembic.ini in your root folder
+        alembic_cfg = Config("alembic.ini")
+        # This forces alembic to use the LIVE engine URL
+        alembic_cfg.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL").replace("postgres://", "postgresql://"))
+        command.upgrade(alembic_cfg, "head")
+        return {"status": "success", "message": "Migrations forced successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 
 
