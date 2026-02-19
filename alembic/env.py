@@ -13,7 +13,7 @@ from app.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-sys.path.append(path.dirname(path.abspath(__file__)))
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 external_url = os.getenv("DATABASE_URL_EXTERNAL")
 if external_url:
     target_url = external_url
