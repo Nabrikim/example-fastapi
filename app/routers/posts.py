@@ -28,6 +28,7 @@ def get_posts(db:Session  = Depends(get_db),current_user:int = Depends(oath_2.ge
     #referred_posts = [post for post in posts if post.owner_id == current_user.id]
 
     results = db.query(models.Post,func.count(models.Votes.post_id).label("votes")).join(models.Votes,models.Votes.post_id ==  models.Post.id, isouter=True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    print(results)
 
 
 
