@@ -916,3 +916,51 @@ uvicorn app.main:app --host 0.0.0.0 --port $PORT
     
 
 
+"""
+Because you used stamp, the database thinks it's at the latest version, so when you try to run upgrade head, Alembic looks at the version table, sees they match, and says: "Nothing to do!"
+
+The Problem: The "False" Sync
+You are in a state where:
+
+Database Version Table: Says you are at Head.
+
+Database Reality: The phone_number column (or other changes) does not actually exist.
+
+The Fix: The "Backstep and Jump"
+To fix this, you need to tell Alembic to go back one step (on paper) and then run a real upgrade.
+
+1. Move the "Bookmark" Back
+Tell the database it is actually at the version before the current one. Look in your versions folder for the ID of the previous file (the down_revision of your current head).
+
+PowerShell
+# Replace 'PREVIOUS_ID' with the actual ID of the older migration
+alembic stamp PREVIOUS_ID
+2. Run the REAL Upgrade
+Now that Alembic thinks the database is "behind," it will actually execute the SQL code when you run:
+
+PowerShell
+alembic upgrade head
+This time, you should see logs showing ALTER TABLE commands.
+
+How to verify it worked
+Don't trust the terminal—trust the database. You can check if the column exists without leaving your terminal by using a quick Python script or checking Postgres directly:
+
+Via Terminal (PowerShell):
+
+PowerShell
+# This will show you the columns in your 'users' table
+psql -d fastapi -c "\d users"
+(If you see phone_number in that list, you are finally finished!)
+
+Why didn't upgrade head work immediately?
+Alembic is "lazy" by design. It only checks the alembic_version table. If that table says 007dcafc5d8d, Alembic assumes every single SQL command inside that file has already been executed. It does not go and double-check your actual tables unless you force it to move from one version to another.
+
+Summary Checklist
+Stamp to the Previous ID.
+
+Upgrade to the Head ID.
+
+Confirm in Postgres.
+
+Do you have the ID of the previous migration file, or do you need help finding it in your versions folder?
+"""

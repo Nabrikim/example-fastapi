@@ -16,8 +16,7 @@ with engine.connect() as conn:
     # This force-deletes the tables so we can start fresh
     conn.execute(text("DROP TABLE IF EXISTS posts, users, votes, alembic_version CASCADE;"))
     conn.commit()
-
-
+#models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
@@ -53,14 +52,24 @@ def verify_db():
     }
 
 
+
 @app.get("/force-migrate")
 def force_migrate():
     try:
+
+        print(f"--- DEBUG K ---")
+        print(f"DATABASE_URL exists: {os.getenv('DATABASE_URL') is not None}")
+        print(f"Final URL being used: {os.getenv('DATABASE_URL')}")
+        target_url = (
+    "postgresql://" + 
+    f"{settings.database_username}:{settings.database_password}@" + 
+    f"{settings.database_hostname}:{settings.database_port}/{settings.database_name}")
         # This points to the alembic.ini in your root folder
         alembic_cfg = Config("alembic.ini")
         # This forces alembic to use the LIVE engine URL
-        alembic_cfg.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL").replace("postgres://", "postgresql://"))
+        alembic_cfg.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL").replace("postgres://", "postgresql://") if not target_url else target_url )
         command.upgrade(alembic_cfg, "head")
+        engine.dispose()
         return {"status": "success", "message": "Migrations forced successfully"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
